@@ -60,7 +60,7 @@ struct HttpResponseBuilderCommon : HttpResponseBuilderData
     }
 };
 
-//! \todo general impl do not work, because onyl the specialized version instanziated.
+//! general impl do not work, because onyl the specialized version are instantiated.
 template<BuildState S>
 struct HttpResponseBuilder : HttpResponseBuilderCommon<HttpResponseBuilder<S>>
 {
