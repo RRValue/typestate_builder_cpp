@@ -28,26 +28,23 @@ concept BuildState =
     std::is_base_of<T, Body>::value || //
     std::is_base_of<T, Send>::value;
 
-// the data we want to act aon.
-struct HttpResponseBuilderData
-{
-    HttpResponseData data;
-};
-
 // forward decl to let HttpResponseBuilderCommon know HttpResponseBuilder
 template<BuildState S>
 struct HttpResponseBuilder;
 
 // use crtp to have a general method struct, which knows the derived types and can used within every typestate.
 template<class T>
-struct HttpResponseBuilderCommon : HttpResponseBuilderData
+class HttpResponseBuilderCommon
 {
-    template<class U>
-    HttpResponseBuilder<U> into()
+public:
+    HttpResponseBuilderCommon() : data{ "",{},""}
     {
-        return HttpResponseBuilder<U>{std::move(data)};
     }
-
+    
+    HttpResponseBuilderCommon(HttpResponseData&& d) : data{ std::move(d) }
+    {
+    }
+    
     HttpResponseBuilder<T> print()
     {
         std::cout << "Status: " << data.status << std::endl;
@@ -58,6 +55,16 @@ struct HttpResponseBuilderCommon : HttpResponseBuilderData
 
         return {std::move(data)};
     }
+
+protected:
+    template<class U>
+    HttpResponseBuilder<U> into()
+    {
+        return HttpResponseBuilder<U>{std::move(data)};
+    }
+
+protected:
+    HttpResponseData data;
 };
 
 //! general impl do not work, because onyl the specialized version are instantiated.
@@ -114,9 +121,9 @@ struct HttpResponseBuilder<Status> : HttpResponseBuilderCommon<Status>
 
 template<>
 struct HttpResponseBuilder<Start> : HttpResponseBuilderCommon<Start>
-{    
+{   
     static HttpResponseBuilder<Status> create()
     {
-        return {HttpResponseData{"",{},""}};
+        return {};
     }
 };
