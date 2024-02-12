@@ -48,7 +48,7 @@ struct HttpResponseBuilderCommon : HttpResponseBuilderData
         return HttpResponseBuilder<U>{std::move(data)};
     }
 
-    T print()
+    HttpResponseBuilder<T> print()
     {
         std::cout << "Status: " << data.status << std::endl;
         std::cout << "Headers:" << std::endl;
@@ -67,7 +67,7 @@ struct HttpResponseBuilder : HttpResponseBuilderCommon<HttpResponseBuilder<S>>
 };
 
 template<>
-struct HttpResponseBuilder<Send> : HttpResponseBuilderCommon<HttpResponseBuilder<Send>>
+struct HttpResponseBuilder<Send> : HttpResponseBuilderCommon<Send>
 {    
     void send() {
         std::cout << "Ab gehts" << std::endl;
@@ -75,7 +75,7 @@ struct HttpResponseBuilder<Send> : HttpResponseBuilderCommon<HttpResponseBuilder
 };
 
 template<>
-struct HttpResponseBuilder<Body> : HttpResponseBuilderCommon<HttpResponseBuilder<Body>>
+struct HttpResponseBuilder<Body> : HttpResponseBuilderCommon<Body>
 {
     HttpResponseBuilder<Send> body(std::string body)
     {
@@ -86,7 +86,7 @@ struct HttpResponseBuilder<Body> : HttpResponseBuilderCommon<HttpResponseBuilder
 };
 
 template<>
-struct HttpResponseBuilder<Headers> : HttpResponseBuilderCommon<HttpResponseBuilder<Headers>>
+struct HttpResponseBuilder<Headers> : HttpResponseBuilderCommon<Headers>
 {    
     HttpResponseBuilder<Headers> add_header(std::string header)
     {
@@ -102,7 +102,7 @@ struct HttpResponseBuilder<Headers> : HttpResponseBuilderCommon<HttpResponseBuil
 };
 
 template<>
-struct HttpResponseBuilder<Status> : HttpResponseBuilderCommon<HttpResponseBuilder<Status>>
+struct HttpResponseBuilder<Status> : HttpResponseBuilderCommon<Status>
 {    
     HttpResponseBuilder<Headers> status(std::string status)
     {
@@ -113,7 +113,7 @@ struct HttpResponseBuilder<Status> : HttpResponseBuilderCommon<HttpResponseBuild
 };
 
 template<>
-struct HttpResponseBuilder<Start> : HttpResponseBuilderCommon<HttpResponseBuilder<Start>>
+struct HttpResponseBuilder<Start> : HttpResponseBuilderCommon<Start>
 {    
     static HttpResponseBuilder<Status> create()
     {
